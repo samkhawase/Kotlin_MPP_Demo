@@ -11,20 +11,22 @@ import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.*
+import kotlin.native.concurrent.*
 
 internal expect val ApplicationDispatcher: CoroutineDispatcher
 
 class ApiService {
-    private val json = Json {
-        ignoreUnknownKeys = true
-        useArrayPolymorphism = true
-        isLenient = true
-    }
+    // Moving the Json formatter inside the `KotlinxSerializer` fixed the issue on iOS
     private val httpClient = HttpClient {
         install(JsonFeature) {
-            serializer = KotlinxSerializer(json)
+            serializer = KotlinxSerializer(
+                Json {
+                    ignoreUnknownKeys = true
+                    useArrayPolymorphism = true
+                    isLenient = true
+                })
+            }
         }
-    }
     private var address = Url("https://postman-echo.com/get?foo1=bar1&foo2=bar2")
 
     fun about(callback: (String) -> Unit) {
