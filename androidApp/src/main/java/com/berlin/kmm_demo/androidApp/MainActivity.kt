@@ -12,8 +12,8 @@ fun greet(): String {
 
 fun networkService() {
     val apiService = ApiService()
-    apiService.about { htmlString ->
-        println("received ${htmlString}")
+    apiService.about { address ->
+        println("⏰ Address received from API: ${address}")
     }
 }
 
@@ -23,7 +23,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val tv: TextView = findViewById(R.id.text_view)
+        // This will return the platform name from the native library
         tv.text = greet()
+        // A simple example of network calls and JSON serialization
         networkService()
     }
 }

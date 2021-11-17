@@ -7,8 +7,8 @@ func greet() -> String {
 
 func getLocations() {
         let apiService = ApiService()
-        apiService.about { (htmlString) in
-            print("🦋 htmlString:\n \(htmlString)")
+        apiService.about { (address) in
+            print("🦋 Address received from API: \(address)")
         }
 }
 

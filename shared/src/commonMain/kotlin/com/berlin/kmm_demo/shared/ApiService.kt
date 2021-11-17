@@ -11,7 +11,9 @@ import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.*
+import kotlinx.serialization.KSerializer
 import kotlin.native.concurrent.*
+import kotlinx.serialization.decodeFromString
 
 internal expect val ApplicationDispatcher: CoroutineDispatcher
 
@@ -27,7 +29,7 @@ class ApiService {
                 })
             }
         }
-    private var address = Url("https://postman-echo.com/get?foo1=bar1&foo2=bar2")
+    private var address = Url("https://postman-echo.com/get?name=Momox&address=Berlin")
 
     fun about(callback: (String) -> Unit) {
         GlobalScope.apply {
@@ -35,7 +37,8 @@ class ApiService {
                 val result: String = httpClient.get {
                     url(this@ApiService.address.toString())
                 }
-                callback(result)
+                val postmanResponse = Json { ignoreUnknownKeys = true }.decodeFromString<PostmanResponse>(result)
+                callback(postmanResponse.args.address)
             }
         }
     }
